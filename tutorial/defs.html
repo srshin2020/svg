@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <svg width="700" height="400" style="background-color:rgb(188, 195, 156);">
+        <defs>
+            <filter id="f2" x="0" y="0" width="200%" height="200%">
+                <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+                <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+            </filter>
+        </defs>
+        <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f2)" />
+
+    </svg>
+</body>
+
+</html>
