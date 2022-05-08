@@ -7,6 +7,7 @@ let startY = 0;
 let clickedRect = null;
 let draggedRect = null;
 let currentMode = "transform";
+let layer = [];
 
 // toolbar on top
 imgs.forEach(element => {
@@ -33,6 +34,7 @@ svg.addEventListener("mousedown", (e) => {
 })
 
 svg.addEventListener("mouseup", (e) => {
+    if (!mousedown) return;
     mousedown = false;
     if (startX == e.layerX && startY == e.layerY) {
         svg.removeChild(draggedRect);
@@ -40,6 +42,11 @@ svg.addEventListener("mouseup", (e) => {
     }
     getRectAttribute(draggedRect);
     clickedRect = draggedRect;
+    layer.unshift({ name: 'rectangle', object: draggedRect });
+    let div = document.createElement('div');
+    div.innerHTML = 'rectangle';
+    document.querySelector(".left").appendChild(div);
+
 })
 
 svg.addEventListener("mousemove", (e) => {
