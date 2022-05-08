@@ -34,6 +34,10 @@ svg.addEventListener("mousedown", (e) => {
 
 svg.addEventListener("mouseup", (e) => {
     mousedown = false;
+    if (startX == e.layerX && startY == e.layerY) {
+        svg.removeChild(draggedRect);
+        return;
+    }
     getRectAttribute(draggedRect);
     clickedRect = draggedRect;
 })
@@ -55,8 +59,8 @@ function createRect(x, y) {
     setRectAttribute(rect, {
         x: x,
         y: y,
-        width: 5,
-        height: 5,
+        width: 1,
+        height: 1,
         rx: 0,
         ry: 0,
         fill: '#d8d8d8',
