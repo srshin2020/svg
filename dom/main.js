@@ -4,7 +4,8 @@ const svg = document.querySelector("svg");
 let mousedown = false;
 let startX = 0;
 let startY = 0;
-let currentRect = null;
+let clickedRect = null;
+let draggedRect = null;
 let currentMode = "transform";
 
 // toolbar on top
@@ -22,69 +23,67 @@ imgs.forEach(element => {
     });
 });
 
+// rect 생성
 svg.addEventListener("mousedown", (e) => {
     if (currentMode !== "rect") return;
     mousedown = true;
     startX = e.layerX;
     startY = e.layerY;
-    currentRect = createRect(startX, startY);
+    draggedRect = createRect(startX, startY);
 })
 
 svg.addEventListener("mouseup", (e) => {
     mousedown = false;
+    getRectAttribute(draggedRect);
+    clickedRect = draggedRect;
 })
 
 svg.addEventListener("mousemove", (e) => {
     if (mousedown) {
-        changeRect({
+        setRectAttribute(draggedRect, {
             width: e.layerX - startX,
             height: e.layerY - startY
         })
     }
 })
 
-//  rectangel handling
-function changeRect(option) {
-    for (key in option) {
-        currentRect.setAttribute(key, option[key])
-    }
-}
 
+// rect 생성
 function createRect(x, y) {
     let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     let stroke = "#000000";
-    rect.setAttribute("x", x);
-    rect.setAttribute("y", y);
-    rect.setAttribute("width", 5);
-    rect.setAttribute("height", 5);
-    rect.setAttribute("rx", 0);
-    rect.setAttribute("ry", 0);
-    rect.setAttribute("fill", '#d8d8d8');
-    rect.setAttribute("stroke", "#000000");
-    rect.setAttribute("stroke-width", "1");
+    setRectAttribute(rect, {
+        x: x,
+        y: y,
+        width: 5,
+        height: 5,
+        rx: 0,
+        ry: 0,
+        fill: '#d8d8d8',
+        stroke: '#000000',
+        "stroke-width": 1
+    })
+
+    //생성된 rect element에 event listener 부착
+    //mouseover event
     rect.addEventListener("mouseover", (e) => {
         if (currentMode !== "transform") return;
         stroke = rect.getAttribute("stroke");
         rect.setAttribute("stroke", "#ff0000");
-
     });
+
+    //mouseout event
     rect.addEventListener("mouseout", (e) => {
         if (currentMode !== "transform") return;
         rect.setAttribute("stroke", stroke);
     });
 
+    //mouse click event
     rect.addEventListener("click", (e) => {
         if (currentMode !== "transform") return;
-        currentRect = rect;
-        document.querySelector("#x").value = rect.getAttribute("x");
-        document.querySelector("#y").value = rect.getAttribute("y");
-        document.querySelector("#width").value = rect.getAttribute("width");
-        document.querySelector("#height").value = rect.getAttribute("height");
-        document.querySelector("#fill").value = rect.getAttribute("fill");
-        document.querySelector("#rx").value = rect.getAttribute("rx");
-        document.querySelector("#ry").value = rect.getAttribute("ry");
-        document.querySelector("#stroke").value = stroke;
-        document.querySelector("#stroke-width").value = rect.getAttribute("stroke-width");
+        clickedRect = rect;
+        rect.setAttribute("stroke", stroke)
+        getRectAttribute(rect);
     });
     svg.appendChild(rect);
     return rect;
@@ -94,5 +93,27 @@ document.querySelector(".right").addEventListener("change", (e) => {
     console.log(e.target.value);
     let option = {};
     option[e.target.id] = e.target.value;
-    changeRect(option);
+    setRectAttribute(clickedRect, option);
 });
+
+//  change rectangle property
+function setRectAttribute(rect, option) {
+    if (rect === null) return;
+    for (key in option) {
+        rect.setAttribute(key, option[key])
+    }
+}
+
+// show rectangle property 
+function getRectAttribute(rect) {
+    document.querySelector("#x").value = rect.getAttribute("x");
+    document.querySelector("#y").value = rect.getAttribute("y");
+    document.querySelector("#width").value = rect.getAttribute("width");
+    document.querySelector("#height").value = rect.getAttribute("height");
+    document.querySelector("#fill").value = rect.getAttribute("fill");
+    document.querySelector("#rx").value = rect.getAttribute("rx");
+    document.querySelector("#ry").value = rect.getAttribute("ry");
+    document.querySelector("#stroke").value = rect.getAttribute("stroke");
+    document.querySelector("#stroke-width").value = rect.getAttribute("stroke-width");
+
+}
