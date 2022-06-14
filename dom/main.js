@@ -14,7 +14,9 @@ imgs.forEach(element => {
     element.addEventListener("click", event => {
         document.querySelector("img.on").classList.remove("on");
         event.target.classList.add("on");
-        if (event.target.classList.contains("rect")) {
+        if (event.target.classList.contains("circle")) {
+            currentMode = "circle";
+        } else if (event.target.classList.contains("rect")) {
             currentMode = "rect";
         } else if (event.target.classList.contains("transform")) {
             currentMode = "transform";
